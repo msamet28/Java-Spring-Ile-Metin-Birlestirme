@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<head>
+
+  <title>YAZLAB PROJE</title>
+
+  <meta charset="UTF-8">
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+    crossorigin="anonymous"
+  />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+  <style>
+    .butontip {
+      background-color: #c2fbd7;
+      border-radius: 100px;
+      color: green;
+      cursor: pointer;
+      display: inline-block;
+      font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto,
+        sans-serif;
+      padding: 7px 20px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 250ms;
+      border: 0;
+      font-size: 16px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .butontip:hover {
+      background-color: green;
+      color: #c2fbd7;
+    }
+
+    .butontip2 {
+      background-color: #ff9d9d;
+      border-radius: 100px;
+      color: red;
+      cursor: pointer;
+      display: inline-block;
+      font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto,
+        sans-serif;
+      padding: 7px 20px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 250ms;
+      border: 0;
+      font-size: 16px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .butontip2:hover {
+      background-color:red ;
+      color: #ff9d9d;
+    }
+
+    .butontip3 {
+      background-color: #6d6060;
+      border-radius: 100px;
+      color: black;
+      cursor: pointer;
+      display: inline-block;
+      font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto,
+        sans-serif;
+      padding: 7px 20px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 250ms;
+      border: 0;
+      font-size: 16px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      margin-top:10px;
+      margin-bottom:25px;
+      width:100px;
+    }
+
+    .butontip3:hover {
+      background-color:black ;
+      color: #6d6060;
+    }
+
+    
+
+  </style>
+
+
+  <script>
+
+    var time="";
+    var sayi=0;
+    var baslik="";
+    
+    
+    $(document).ready(function(){
+    
+  $("#ekle").click(function(){
+    sayi=$("textarea").length;
+    baslik=(sayi+1)+".Metin" 
+    $("#metinler").append("<h5 id=text"+(sayi+1)+">"+baslik+"</h5>");
+    $("#metinler").append("<textarea id=metin"+(sayi+1)+"></textarea>")
+    $("#metinler").append("<button id=onay"+(sayi+1)+" class=butontip3>Onayla</button>")
+      
+  }); 
+
+  $("#sil").click(function(){
+    sayi=$("textarea").length;
+    $("#text"+(sayi)).remove();
+    $("#metin"+(sayi)).remove();
+    $("#onay"+(sayi)).remove();
+    
+  });
+
+  $("#birlestir").click(function(){
+
+    sayi=$("textarea").length;
+    console.log(sayi);
+    var metinler=[sayi];
+    for(var i=0 ; i<sayi ; i++){
+      var x=document.getElementById("metin"+(i+1));
+      metinler[i]=x.value;
+      console.log(metinler[i]);
+    }
+
+    $.ajax({
+  url: "http://localhost:8080/postekrani",
+  type: "POST",
+  data: {array:metinler},
+  success: function(response) {
+    $("#sonmetin").html(response);
+  }
+});
+
+$.ajax({
+  url: "http://localhost:8080/zamanekrani",
+  type: "POST",
+  data: {String:time},
+  success: function(response) {
+    time=response;
+    $("#sonzaman").html(response);
+  }
+});
+
+   document.getElementById("alan").style.visibility = "visible";
+
+  }); 
+
+
+
+  $("#kaydet").click(function(){
+
+    sayi=$("textarea").length;
+    var dbmetinler=[sayi];
+    for(var i=0 ; i<sayi ; i++){
+      var x=document.getElementById("metin"+(i+1));
+      dbmetinler[i]=x.value;
+    }
+
+    var dbmetin=$("#sonmetin").text();
+    console.log(dbmetin);
+
+    $.ajax({
+  url: "http://localhost:8080/dbekrani",
+  type: "POST",
+  data: {"soncumle":dbmetin,
+         "cumleler":dbmetinler,
+         "zaman":time},
+  success: function(response) {
+    console.log("basarili");
+  }
+});
+
+  })
+
+  
+});
+
+  </script>
+
+  
+</head>
+
+
+
+
+<body style="background-color: cornflowerblue;">
+
+  <div class="container">
+
+    <h1 class="d-flex" style="margin-top: 20px; margin-bottom: 40px; align-items: center; justify-content: center;">
+      YazLab 1.Proje
+    </h1>
+
+    <div class="row d-flex">
+      <button id="ekle" class="butontip">&#10133</button>
+    </div>
+    <br>
+    
+
+    <div class="row" id="metinler">
+          <h5 id="text1">1.Metin</h5>
+          <textarea id="metin1"></textarea>
+          <button id="onay1" class="butontip3">Onayla</button>
+          
+          <h5 id="text2">2.Metin</h5>
+          <textarea id="metin2"></textarea>  
+          <button id="onay2" class="butontip3">Onayla</button>
+      </div>
+      
+
+      <br>
+      <div class="row d-flex">
+        <button id="sil" class="butontip2">&#10134</button>
+      </div>
+      
+
+    <br/><br/>
+
+    <div class="d-flex" style="justify-content: center">
+      <button id="birlestir" class="butontip">BİRLEŞTİR</button>
+    </div>
+
+    <br><br>
+
+    <div id="alan" style="visibility: hidden;">
+
+      <h2 style="text-align: center;">Birleşmiş Metin</h2>
+
+      <div id="sonmetin" class="d-flex border border-dark" style="text-decoration:solid; font-size:x-large; justify-content:center;"></div>
+      <div id="sonzaman" class="d-flex border border-dark" style="text-decoration:solid; font-size:x-large; justify-content:center;"></div>
+
+      <br>
+      
+      <div class="d-flex" style="justify-content: center">
+        <button id="kaydet" class="butontip">KAYDET</button>
+      </div>
+
+    </div>
+
+    <br><br>
+
+    
+      <table class="table custom-table table-striped table-dark table-hover table-lg">
+        <thead >
+          <tr>
+            <th>Birleştirilen Metinler</th>
+            <th>Birleşmiş Metin</th>
+            <th>Geçen Zaman</th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr>
+            <td >ahmet naber</td>
+            <td>ahmetnaber</td>
+            <td>0.0728</td>
+          </tr>
+
+          <tr>
+            <td>ahmet ev eve gel gelirken ekmek</td>
+            <td>ahmet eve gelirken ekmek</td>
+            <td>0.0039</td>
+          </tr>
+        </tbody>
+      </table>
+    
+
+    <br><br><br><br>
+
+    
+
+
+    
+
+  </div>
+
+</body>
